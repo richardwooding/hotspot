@@ -22,26 +22,56 @@ reimplementing them:
 
 ## Install
 
+**Homebrew** (macOS):
+
+```sh
+brew install --cask richardwooding/tap/hotspot
+```
+
+**Go:**
+
 ```sh
 go install github.com/richardwooding/hotspot/cmd/hotspot@latest
 ```
 
-## Use
+Or download a prebuilt binary for macOS, Linux or Windows from the
+[releases page](https://github.com/richardwooding/hotspot/releases). It's a
+single static binary — no cgo, no runtime dependencies (a `git` binary on PATH
+is used for churn when present).
+
+## CLI
+
+Point it at any repository — the language is detected per file:
 
 ```sh
-hotspot -top 20 /path/to/repo
+hotspot /path/to/repo          # top 20, ranked highest-risk first
+hotspot -top 5 .               # just the 5 hottest files
+hotspot -min-score 0.5 .       # only files at or above a risk index
+hotspot -json . > hotspots.json
 ```
 
 ```
-SCORE  CHURN  COGN  CYC  CA  CE  FNS  LANG  FILE
-1.000  6      68    47   1   1   10   go    detect.go
-0.849  4      76    72   1   1   17   go    projectdetect_test.go
-0.683  4      32    42   1   1   9    go    resolver_test.go
-0.671  4      30    28   1   1   8    go    resolver.go
-0.532  2      53    47   1   1   11   go    projectdetect.go
+$ hotspot -top 6 .
+SCORE  CHURN  COGN  CYC  CA  CE  FNS  LANG        FILE
+1.000  34     57    24   6   3   12   python      sql/query.py
+0.812  28     112   48   5   4   9    typescript  src/checker.ts
+0.744  25     45    19   4   2   8    go          internal/completions.go
+0.610  22     61    28   5   2   7    rust        src/ast.rs
+0.470  15     43    21   3   2   6    php         src/Router.php
+0.331  9      31    16   0   0   4    r           R/reshape.R
 ```
 
-Flags: `-top N` (0 = all), `-min-score F`, `-json`, `-include-untracked`.
+Columns: **SCORE** (0..1 relative risk index) · **CHURN** (commits) ·
+**COGN** / **CYC** (cognitive / cyclomatic complexity) · **CA** / **CE**
+(afferent / efferent coupling) · **FNS** (functions) · **LANG** · **FILE**.
+
+| flag | default | meaning |
+| --- | --- | --- |
+| `-top N` | `20` | show the top N files (`0` = all) |
+| `-min-score F` | `0` | hide files scoring below `F` (0..1) |
+| `-json` | `false` | emit the full report as JSON |
+| `-include-untracked` | `false` | also score files not tracked by git |
+| `-version` | | print version and exit |
 
 `-json` emits the full report — `score`, the normalized `churnNorm` /
 `complexityNorm` / `couplingNorm`, `commits`, `cognitive`, `cyclomatic`,

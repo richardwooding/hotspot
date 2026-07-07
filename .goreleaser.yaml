@@ -1,0 +1,89 @@
+# GoReleaser configuration for the hotspot CLI.
+# Docs: https://goreleaser.com
+version: 2
+
+project_name: hotspot
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: hotspot
+    main: ./cmd/hotspot
+    binary: hotspot
+    env:
+      - CGO_ENABLED=0 # gotreesitter is pure Go, so grammars embed with no cgo
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - id: archives
+    ids:
+      - hotspot
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "^ci:"
+      - "Merge pull request"
+      - "Merge branch"
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\(.+\))??!?:.+$'
+      order: 0
+    - title: Bug fixes
+      regexp: '^.*?fix(\(.+\))??!?:.+$'
+      order: 1
+    - title: Others
+      order: 999
+
+# Homebrew Cask (macOS). Casks are macOS-only, so only the darwin artifacts are
+# used; Linux/Windows users take the archives from the GitHub release.
+homebrew_casks:
+  - name: hotspot
+    binaries:
+      - hotspot
+    repository:
+      owner: richardwooding
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: "https://github.com/richardwooding/hotspot"
+    description: "Rank a repository by refactoring risk — git churn × complexity × coupling — across 17 languages"
+    # The released binary is unsigned/un-notarized, so macOS Gatekeeper marks it
+    # with a quarantine attribute that blocks it on first run. Strip it on
+    # install so `hotspot` just works.
+    hooks:
+      post:
+        install: |
+          system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/hotspot"]
+
+release:
+  github:
+    owner: richardwooding
+    name: hotspot
