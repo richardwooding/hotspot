@@ -72,10 +72,10 @@ func printTable(rep hotspot.Report) {
 		return
 	}
 	tw := tabwriter.NewWriter(os.Stdout, 0, 2, 2, ' ', 0)
-	fmt.Fprintln(tw, "SCORE\tCHURN\tCOGN\tCYC\tFNS\tLANG\tFILE")
+	fmt.Fprintln(tw, "SCORE\tCHURN\tCOGN\tCYC\tCA\tCE\tFNS\tLANG\tFILE")
 	for _, f := range rep.Files {
-		fmt.Fprintf(tw, "%.3f\t%d\t%d\t%d\t%d\t%s\t%s\n",
-			f.Score, f.Commits, f.Cognitive, f.Cyclomatic, f.Functions, f.Language, f.Path)
+		fmt.Fprintf(tw, "%.3f\t%d\t%d\t%d\t%d\t%d\t%d\t%s\t%s\n",
+			f.Score, f.Commits, f.Cognitive, f.Cyclomatic, f.Afferent, f.Efferent, f.Functions, f.Language, f.Path)
 	}
 	_ = tw.Flush()
 }

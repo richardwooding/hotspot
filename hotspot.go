@@ -22,9 +22,16 @@ type FileRisk struct {
 	// function reported it, else total cyclomatic.
 	Complexity float64 `json:"complexity"`
 
-	// Normalized 0..1 across the analyzed set, and their product.
+	// Coupling of the file's package (from go-coupling); zero when the project
+	// has no analysable ecosystem or the package is isolated.
+	Afferent    int     `json:"afferent"`
+	Efferent    int     `json:"efferent"`
+	Instability float64 `json:"instability"`
+
+	// Normalized 0..1 across the analyzed set, and the combined risk Score.
 	ChurnNorm      float64 `json:"churnNorm"`
 	ComplexityNorm float64 `json:"complexityNorm"`
+	CouplingNorm   float64 `json:"couplingNorm"`
 	Score          float64 `json:"score"`
 }
 
@@ -59,6 +66,7 @@ func Analyze(ctx context.Context, root string, opts Options) (Report, error) {
 	if err != nil {
 		return Report{}, err
 	}
+	attachCoupling(files, goCoupling{}, root)
 	Score(files)
 
 	nowFn := opts.now

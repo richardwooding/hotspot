@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>hotspot — find the code worth refactoring first</title>
-<meta name="description" content="Cross-language code-risk hotspots for Go: fuse git churn × code complexity into one prioritized refactoring signal. Composes gitmeta + codemetrics. CLI + JSON today; coupling, call-graph centrality, SARIF & MCP next.">
+<meta name="description" content="Cross-language code-risk hotspots for Go: fuse git churn × complexity × package coupling into one prioritized refactoring signal. Composes gitmeta + codemetrics + go-coupling. CLI + JSON; call-graph centrality, SARIF & MCP next.">
 <meta property="og:title" content="hotspot">
-<meta property="og:description" content="Rank a repo by refactoring risk — churn × complexity — by composing gitmeta and codemetrics.">
+<meta property="og:description" content="Rank a repo by refactoring risk — churn × complexity × coupling — by composing gitmeta, codemetrics and go-coupling.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%23161b22'/><circle cx='12' cy='12' r='7' fill='none' stroke='%23a371f7' stroke-width='2'/><circle cx='12' cy='12' r='2.5' fill='%23d2b3ff'/></svg>">
 <script>try{var t=localStorage.getItem("gl-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
@@ -44,14 +44,14 @@
   <section class="gl-hero">
     <div class="gl-wrap gl-hero-grid">
       <div>
-        <p class="gl-eyebrow">go · churn × complexity · zero-config</p>
+        <p class="gl-eyebrow">go · churn × complexity × coupling</p>
         <h1>Find the code <span class="gl-grad">worth refactoring first.</span></h1>
         <p class="sub">Complex code that never changes is dormant. Churny code that's trivial is cheap. The code that hurts is <em>both</em> — high complexity <strong>and</strong> high churn. <code>hotspot</code> multiplies the two into one ranked list, so you fix what actually costs you.</p>
         <div class="gl-cta">
           <a class="gl-btn primary" href="#install">Install</a>
           <a class="gl-btn ghost" href="https://pkg.go.dev/github.com/richardwooding/hotspot">Go Reference</a>
         </div>
-        <p class="gl-hint">MIT · pure Go, no cgo · composes <a href="https://richardwooding.github.io/gitmeta/">gitmeta</a> + <a href="https://richardwooding.github.io/codemetrics/">codemetrics</a></p>
+        <p class="gl-hint">MIT · pure Go, no cgo · composes <a href="https://richardwooding.github.io/gitmeta/">gitmeta</a> + <a href="https://richardwooding.github.io/codemetrics/">codemetrics</a> + <a href="https://richardwooding.github.io/go-coupling/">go-coupling</a></p>
       </div>
       <div class="gl-term">
         <div class="bar">
@@ -61,13 +61,12 @@
           <span class="t">hotspot</span>
         </div>
 <pre><span class="pr">$</span> hotspot -top 6 .
-<span class="hd">SCORE  CHURN  COGN  CYC  FNS  LANG  FILE</span>
-<span class="n">0.912</span>  6      68    47   10   go    <span class="loc">detect.go</span>
-<span class="n">0.774</span>  4      76    72   17   go    <span class="loc">projectdetect_test.go</span>
-<span class="n">0.623</span>  4      32    42   9    go    <span class="loc">resolver_test.go</span>
-<span class="n">0.612</span>  4      30    28   8    go    <span class="loc">resolver.go</span>
-<span class="n">0.527</span>  3      30    29   5    go    <span class="loc">config_test.go</span>
-<span class="n">0.485</span>  2      53    47   11   go    <span class="loc">projectdetect.go</span>
+<span class="hd">SCORE  CHURN  COGN  CYC  CA  CE  LANG  FILE</span>
+<span class="n">1.000</span>  6      68    47   1   1   go    <span class="loc">detect.go</span>
+<span class="n">0.849</span>  4      76    72   1   1   go    <span class="loc">projectdetect_test.go</span>
+<span class="n">0.683</span>  4      32    42   1   1   go    <span class="loc">resolver_test.go</span>
+<span class="n">0.671</span>  4      30    28   1   1   go    <span class="loc">resolver.go</span>
+<span class="n">0.532</span>  2      53    47   1   1   go    <span class="loc">projectdetect.go</span>
 <span class="ok">↳ detect.go</span> — most-changed <span class="warn">and</span> most-complex: start here.</pre>
       </div>
     </div>
@@ -77,8 +76,8 @@
     <div class="gl-wrap">
       <p class="gl-eyebrow">how it works</p>
       <h2>One score, composed from single-purpose tools.</h2>
-      <p class="gl-lede" style="margin-top:14px">hotspot doesn't re-implement git or a parser — it fuses libraries that each do one thing well, normalizes every signal to 0–1 (log-scaled, so one giant file can't flatten the rest), and multiplies them.</p>
-      <div class="gl-grid two" style="margin-top:32px">
+      <p class="gl-lede" style="margin-top:14px">hotspot doesn't re-implement git or a parser — it fuses libraries that each do one thing well, normalizes every signal to 0–1 (log-scaled, so one giant file can't flatten the rest), multiplies churn by complexity, then lets coupling amplify.</p>
+      <div class="gl-grid feat" style="margin-top:32px">
         <article class="gl-card gl-card-link">
           <h3><span class="gl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v12M6 21a3 3 0 100-6 3 3 0 000 6zM18 9a3 3 0 100-6 3 3 0 000 6zM18 9c0 6-6 4-6 9"/></svg></span>Churn — how often it changes</h3>
           <p><code>gitmeta</code> scans the working tree once and returns per-file commit counts, last author and last-changed time — no <code>git log</code> per file.</p>
@@ -89,11 +88,16 @@
           <p><code>codemetrics</code> computes per-function cyclomatic and cognitive complexity; hotspot sums them per file (cognitive preferred — it tracks human effort).</p>
           <p class="gl-hint" style="margin-top:14px"><a class="gl-stretch" href="https://richardwooding.github.io/codemetrics/">codemetrics ↗</a> · <a href="https://github.com/richardwooding/codemetrics">Code ↗</a></p>
         </article>
+        <article class="gl-card gl-card-link">
+          <h3><span class="gl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M5 8v2a2 2 0 002 2h10a2 2 0 002-2V8M12 12v4"/></svg></span>Coupling — how entangled it is</h3>
+          <p><code>go-coupling</code> builds the first-party import graph and returns each package's afferent/efferent coupling (Ca/Ce). Entangled code amplifies the risk score — it's costlier to change safely.</p>
+          <p class="gl-hint" style="margin-top:14px"><a class="gl-stretch" href="https://richardwooding.github.io/go-coupling/">go-coupling ↗</a> · <a href="https://github.com/richardwooding/go-coupling">Code ↗</a></p>
+        </article>
       </div>
       <div class="gl-split" style="margin-top:24px">
-<pre class="gl-code"><span class="c">// risk = normalized(churn) × normalized(complexity)</span>
-<span class="c">// both log-scaled, both 0..1 — high only when BOTH are high</span>
-score := churnNorm * complexityNorm</pre>
+<pre class="gl-code"><span class="c">// base = norm(churn) × norm(complexity)</span>
+<span class="c">// coupling amplifies; renormalized so top = 1.0</span>
+score := base * (<span class="n">1</span> + couplingNorm)</pre>
 <pre class="gl-code"><span class="c"># library, not just a CLI</span>
 rep, _ := hotspot.Analyze(ctx, <span class="s">"."</span>, hotspot.Options{})
 <span class="k">for</span> _, f := <span class="k">range</span> rep.Files[:10] {
@@ -167,7 +171,6 @@ rep, _ := hotspot.Analyze(ctx, <span class="s">"."</span>, hotspot.Options{})
       <h2>More signals, same one score.</h2>
       <p class="gl-lede" style="margin-top:14px">Each dimension already has a home in the portfolio and slots in behind the existing interfaces — the score just gets sharper.</p>
       <ul class="gl-badges" aria-label="Planned integrations" style="margin-top:18px">
-        <li class="gl-lang">coupling / instability → go-coupling</li>
         <li class="gl-lang">call-graph centrality → treesitter-symbols</li>
         <li class="gl-lang">SARIF output → go-sarif</li>
         <li class="gl-lang">MCP server (ask Claude for hotspots)</li>

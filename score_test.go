@@ -53,6 +53,26 @@ func TestScoreNormalizedToUnitInterval(t *testing.T) {
 	}
 }
 
+func TestCouplingAmplifiesButNeverZeros(t *testing.T) {
+	// Two files with identical churn & complexity; one sits in a heavily
+	// coupled package. Coupling must break the tie in its favor, and the
+	// uncoupled file must keep a positive score (coupling amplifies, not zeroes).
+	files := []FileRisk{
+		{Path: "plain.go", Commits: 10, Complexity: 20},
+		{Path: "hub.go", Commits: 10, Complexity: 20, Afferent: 12, Efferent: 8},
+	}
+	Score(files)
+	if files[0].Path != "hub.go" {
+		t.Fatalf("coupled file should rank first, got %q", files[0].Path)
+	}
+	if s := scoreOf(files, "plain.go"); s <= 0 {
+		t.Fatalf("uncoupled-but-hot file must keep positive score, got %v", s)
+	}
+	if scoreOf(files, "hub.go") != 1 {
+		t.Fatalf("top (coupled) file should renormalize to 1.0, got %v", scoreOf(files, "hub.go"))
+	}
+}
+
 func TestScoreEmptyAndAllZero(t *testing.T) {
 	Score(nil) // must not panic
 	files := []FileRisk{{Path: "a"}, {Path: "b"}}

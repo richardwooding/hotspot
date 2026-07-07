@@ -1,4 +1,8 @@
+github.com/pelletier/go-toml/v2 v2.4.2 h1:M2fKKbmyvI+hGId/D0W64qDBMVhJnNR10O5gIbMc//Q=
+github.com/pelletier/go-toml/v2 v2.4.2/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
 github.com/richardwooding/codemetrics v0.11.0 h1:FsJNAnNcLo9BQ1bF1Hkg4Z0bDigyr0h5MfrvR3b01Zo=
 github.com/richardwooding/codemetrics v0.11.0/go.mod h1:hDgNhkfUfWMtUt/TJfRr+AOvVS266KAwCeaDKvtkMw0=
 github.com/richardwooding/gitmeta v0.1.0 h1:TOf6P+dzcFh5fFbDwJrJFVUGPzbwqyg76wRosuYrlBA=
 github.com/richardwooding/gitmeta v0.1.0/go.mod h1:arft+ynVGxEeeRnQMnosIvlfsaxEAaHoBYh1U7Nq1n0=
+github.com/richardwooding/go-coupling v0.2.0 h1:fihwSYWgqXW/HInhNTQgZuQQHQf9vyRoZlS4MNiEJ1U=
+github.com/richardwooding/go-coupling v0.2.0/go.mod h1:Ygz2/NnbEEFLe50QPpe8TsmNQy7Az+FwzyMi8sOwzPo=

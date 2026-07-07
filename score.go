@@ -5,27 +5,43 @@ import (
 	"sort"
 )
 
-// Score fills ChurnNorm, ComplexityNorm and Score on each file (in place) and
-// sorts the slice by Score descending.
+// CouplingWeight bounds how much package coupling can amplify a file's base
+// risk: the amplifier is 1 + CouplingWeight×couplingNorm, so at the default a
+// maximally-coupled file's base risk is doubled. Coupling only ever amplifies —
+// a file with no coupling keeps its churn×complexity risk unchanged.
+const CouplingWeight = 1.0
+
+// Score fills ChurnNorm, ComplexityNorm, CouplingNorm and Score on each file
+// (in place) and sorts the slice by Score descending.
 //
-// Both churn and complexity are heavy-tailed, so each is passed through
-// log1p before min-max normalization to 0..1 — this keeps a single 500-commit
-// file or one enormous function from flattening everything else to zero. The
-// combined risk is the product of the two normalized signals: a file scores
-// high only when it is *both* frequently changed and complex. A file missing
-// either signal scores 0 on that axis and therefore 0 overall, which is the
-// intended behavior — dormant complexity and churny-but-trivial files are not
-// hotspots.
+// Churn, complexity and coupling degree (Ca+Ce) are each heavy-tailed, so each
+// is passed through log1p before min-max normalization to 0..1 — this keeps a
+// single 500-commit file or one enormous function from flattening everything
+// else. The base risk is the product of churn and complexity: a file matters
+// only when it is *both* frequently changed and complex (dormant complexity and
+// churny-but-trivial files are not hotspots). Coupling then amplifies that base
+// — code that is hot, complex *and* entangled with many other packages is the
+// riskiest to touch. Scores are renormalized so the top file is 1.0 and the
+// whole report reads as a relative risk index in 0..1.
 func Score(files []FileRisk) {
-	var churnMax, cmpMax float64
+	var churnMax, cmpMax, coupMax float64
 	for _, f := range files {
 		churnMax = math.Max(churnMax, log1p(float64(f.Commits)))
 		cmpMax = math.Max(cmpMax, log1p(f.Complexity))
+		coupMax = math.Max(coupMax, log1p(float64(f.Afferent+f.Efferent)))
 	}
+	raw := make([]float64, len(files))
+	var rawMax float64
 	for i := range files {
 		files[i].ChurnNorm = norm(log1p(float64(files[i].Commits)), churnMax)
 		files[i].ComplexityNorm = norm(log1p(files[i].Complexity), cmpMax)
-		files[i].Score = files[i].ChurnNorm * files[i].ComplexityNorm
+		files[i].CouplingNorm = norm(log1p(float64(files[i].Afferent+files[i].Efferent)), coupMax)
+		base := files[i].ChurnNorm * files[i].ComplexityNorm
+		raw[i] = base * (1 + CouplingWeight*files[i].CouplingNorm)
+		rawMax = math.Max(rawMax, raw[i])
+	}
+	for i := range files {
+		files[i].Score = norm(raw[i], rawMax)
 	}
 	sort.SliceStable(files, func(a, b int) bool {
 		return less(files[b], files[a]) // descending
