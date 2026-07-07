@@ -22,12 +22,22 @@ import (
 	"github.com/richardwooding/hotspot"
 )
 
+// version is set by the linker at release time (-X main.version=...); "dev" for
+// go install / local builds.
+var version = "dev"
+
 func main() {
 	top := flag.Int("top", 20, "show the top N files (0 = all)")
 	minScore := flag.Float64("min-score", 0, "hide files scoring below this (0..1)")
 	asJSON := flag.Bool("json", false, "emit the full report as JSON")
 	untracked := flag.Bool("include-untracked", false, "also score files not tracked by git")
+	showVersion := flag.Bool("version", false, "print version and exit")
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Println("hotspot", version)
+		return
+	}
 
 	root := "."
 	if flag.NArg() > 0 {
