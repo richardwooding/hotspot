@@ -5,11 +5,11 @@
 
 **Website:** [richardwooding.github.io/hotspot](https://richardwooding.github.io/hotspot/)
 
-Find the code **worth refactoring first**. `hotspot` ranks a repository by
-refactoring risk using *behavioral code analysis*: the code that costs you is
-the code that is both **complex** and **frequently changed**. Complexity that
-never changes is dormant; churn on trivial code is cheap. Multiply the two and
-the real hotspots rise to the top.
+Find the code **worth refactoring first**, across **17 languages**. `hotspot`
+ranks a repository by refactoring risk using *behavioral code analysis*: the
+code that costs you is the code that is both **complex** and **frequently
+changed**. Complexity that never changes is dormant; churn on trivial code is
+cheap. Multiply the two and the real hotspots rise to the top.
 
 It's built by **composing** small single-purpose libraries rather than
 reimplementing them:
@@ -17,7 +17,7 @@ reimplementing them:
 | signal | role | source |
 | --- | --- | --- |
 | **churn** — commits per file, last author/time | how often it changes | [`gitmeta`](https://github.com/richardwooding/gitmeta) |
-| **complexity** — cyclomatic + cognitive | how hard it is | [`codemetrics`](https://github.com/richardwooding/codemetrics) |
+| **complexity** — cyclomatic + cognitive, **17 languages** | how hard it is | [`codemetrics`](https://github.com/richardwooding/codemetrics) |
 | **coupling** — afferent/efferent (Ca/Ce) | how entangled it is | [`go-coupling`](https://github.com/richardwooding/go-coupling) |
 
 ## Install
@@ -85,16 +85,19 @@ ranking.
 ## Status & roadmap
 
 **Today** hotspot fuses **churn × complexity × coupling**. Complexity is
-computed for **Go** (via `codemetrics`' `go/ast` library path) and coupling for
-Go modules (via `go-coupling`); other languages are walked but not yet scored.
-Each signal sits behind a small interface (`ChurnProvider`,
+computed across **17 languages** — `c, cpp, csharp, go, java, javascript,
+kotlin, matlab, perl, php, python, r, ruby, rust, scala, swift, typescript` —
+with **Go** parsed via `go/ast` and the rest via `codemetrics`' **pure-Go
+tree-sitter** backend ([gotreesitter](https://github.com/odvcencio/gotreesitter),
+no cgo). Churn is language-agnostic; **coupling is currently Go modules only**
+(via `go-coupling`). Each signal sits behind a small interface (`ChurnProvider`,
 `ComplexityProvider`, `CouplingProvider`), so the following drop in without
 changing the scorer:
 
 - **call-graph centrality** (blast radius) — [`treesitter-symbols`](https://github.com/richardwooding/treesitter-symbols)
 - **SARIF** output for GitHub code scanning — [`go-sarif`](https://github.com/richardwooding/go-sarif)
 - an **MCP server** so an AI agent can ask *"what's the riskiest code here, and why?"*
-- multi-language complexity & coupling
+- multi-language coupling
 
 ## License
 

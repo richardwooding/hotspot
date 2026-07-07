@@ -6,6 +6,11 @@ require (
 	github.com/richardwooding/codemetrics v0.11.0
 	github.com/richardwooding/gitmeta v0.1.0
 	github.com/richardwooding/go-coupling v0.2.0
+	github.com/richardwooding/projectdetect v0.6.0
 )
 
-require github.com/pelletier/go-toml/v2 v2.4.2 // indirect
+require (
+	github.com/odvcencio/gotreesitter v0.20.9 // indirect
+	github.com/pelletier/go-toml/v2 v2.4.2 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
+)

@@ -6,7 +6,7 @@
 <title>hotspot — find the code worth refactoring first</title>
 <meta name="description" content="Cross-language code-risk hotspots for Go: fuse git churn × complexity × package coupling into one prioritized refactoring signal. Composes gitmeta + codemetrics + go-coupling. CLI + JSON; call-graph centrality, SARIF & MCP next.">
 <meta property="og:title" content="hotspot">
-<meta property="og:description" content="Rank a repo by refactoring risk — churn × complexity × coupling — by composing gitmeta, codemetrics and go-coupling.">
+<meta property="og:description" content="Rank a repo by refactoring risk across 17 languages — churn × complexity × coupling — composing gitmeta, codemetrics and go-coupling.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%23161b22'/><circle cx='12' cy='12' r='7' fill='none' stroke='%23a371f7' stroke-width='2'/><circle cx='12' cy='12' r='2.5' fill='%23d2b3ff'/></svg>">
 <script>try{var t=localStorage.getItem("gl-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
@@ -44,7 +44,7 @@
   <section class="gl-hero">
     <div class="gl-wrap gl-hero-grid">
       <div>
-        <p class="gl-eyebrow">go · churn × complexity × coupling</p>
+        <p class="gl-eyebrow">17 languages · churn × complexity × coupling</p>
         <h1>Find the code <span class="gl-grad">worth refactoring first.</span></h1>
         <p class="sub">Complex code that never changes is dormant. Churny code that's trivial is cheap. The code that hurts is <em>both</em> — high complexity <strong>and</strong> high churn. <code>hotspot</code> multiplies the two into one ranked list, so you fix what actually costs you.</p>
         <div class="gl-cta">
@@ -85,7 +85,7 @@
         </article>
         <article class="gl-card gl-card-link">
           <h3><span class="gl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18L10 6l4 8 3-5 3 9"/></svg></span>Complexity — how hard it is</h3>
-          <p><code>codemetrics</code> computes per-function cyclomatic and cognitive complexity; hotspot sums them per file (cognitive preferred — it tracks human effort).</p>
+          <p><code>codemetrics</code> computes per-function cyclomatic and cognitive complexity across <strong>17 languages</strong> — Go via <code>go/ast</code>, the rest via a pure-Go tree-sitter backend. hotspot sums them per file (cognitive preferred — it tracks human effort).</p>
           <p class="gl-hint" style="margin-top:14px"><a class="gl-stretch" href="https://richardwooding.github.io/codemetrics/">codemetrics ↗</a> · <a href="https://github.com/richardwooding/codemetrics">Code ↗</a></p>
         </article>
         <article class="gl-card gl-card-link">
@@ -161,7 +161,7 @@ rep, _ := hotspot.Analyze(ctx, <span class="s">"."</span>, hotspot.Options{})
           <button class="gl-copy" data-gl-copy="i3">Copy</button>
         </div>
       </div>
-      <p class="gl-hint">Requires Go 1.26+ and a <code>git</code> binary on PATH for churn. Complexity is computed for Go today.</p>
+      <p class="gl-hint">Requires Go 1.26+ and a <code>git</code> binary on PATH for churn. Complexity spans <strong>17 languages</strong> (still a single pure-Go binary — no cgo). Coupling is Go modules today.</p>
     </div>
   </section>
 
@@ -174,7 +174,7 @@ rep, _ := hotspot.Analyze(ctx, <span class="s">"."</span>, hotspot.Options{})
         <li class="gl-lang">call-graph centrality → treesitter-symbols</li>
         <li class="gl-lang">SARIF output → go-sarif</li>
         <li class="gl-lang">MCP server (ask Claude for hotspots)</li>
-        <li class="gl-lang">multi-language complexity</li>
+        <li class="gl-lang">multi-language coupling</li>
       </ul>
     </div>
   </section>

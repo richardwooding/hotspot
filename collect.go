@@ -5,11 +5,14 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
 	"github.com/richardwooding/codemetrics"
+	"github.com/richardwooding/codemetrics/treesitter"
 	"github.com/richardwooding/gitmeta"
+	"github.com/richardwooding/projectdetect"
 )
 
 // ChurnProvider yields how often a file has changed. absPath is an absolute
@@ -127,23 +130,54 @@ func (g gitmetaChurn) Churn(absPath string) (int, string, time.Time, bool) {
 
 // --- codemetrics adapter (complexity) ----------------------------------------
 
-// goComplexity maps source files to codemetrics. codemetrics' library API
-// currently parses Go (via go/ast); other languages return unsupported until
-// codemetrics widens its library surface, at which point extByLang grows.
-type goComplexity struct{}
+// codemetricsComplexity computes per-function complexity for every language
+// codemetrics supports: Go via go/ast, and the rest via codemetrics' pure-Go
+// tree-sitter backend (github.com/odvcencio/gotreesitter — no cgo). It uses the
+// exact pipeline the codemetrics CLI uses: projectdetect resolves the language
+// from the path, then Go dispatches to ParseGo and everything else to
+// treesitter.Parse.
+type codemetricsComplexity struct{}
 
-var extByLang = map[string]string{
-	".go": "go",
+// supportedLangs is the set hotspot can score: "go" plus codemetrics' tree-sitter
+// languages. Built once.
+var supportedLangs = func() map[string]bool {
+	m := map[string]bool{"go": true}
+	for _, l := range treesitter.SupportedLanguages() {
+		m[l] = true
+	}
+	return m
+}()
+
+// SupportedLanguages returns the sorted language identifiers hotspot scores for
+// complexity (Go + codemetrics' tree-sitter set).
+func SupportedLanguages() []string {
+	out := make([]string, 0, len(supportedLangs))
+	for l := range supportedLangs {
+		out = append(out, l)
+	}
+	sort.Strings(out)
+	return out
 }
 
-func (goComplexity) Language(path string) (string, bool) {
-	lang, ok := extByLang[strings.ToLower(filepath.Ext(path))]
-	return lang, ok
+func (codemetricsComplexity) Language(path string) (string, bool) {
+	lang := projectdetect.LanguageForPath(path)
+	if lang == "" || !supportedLangs[lang] {
+		return "", false
+	}
+	return lang, true
 }
 
-func (goComplexity) Complexity(lang string, src []byte) (int, int, int, bool) {
-	fns, err := codemetrics.Parse(lang, src)
-	if err != nil {
+func (codemetricsComplexity) Complexity(lang string, src []byte) (int, int, int, bool) {
+	var (
+		fns []codemetrics.FunctionMetrics
+		err error
+	)
+	if lang == "go" {
+		fns, err = codemetrics.ParseGo(src)
+	} else {
+		fns, err = treesitter.Parse(lang, src)
+	}
+	if err != nil { // unsupported/unavailable language or hard parse failure
 		return 0, 0, 0, false
 	}
 	var cyc, cog int

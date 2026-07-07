@@ -62,7 +62,7 @@ func Analyze(ctx context.Context, root string, opts Options) (Report, error) {
 	if err != nil {
 		return Report{}, err
 	}
-	files, err := collect(root, churn, goComplexity{}, opts)
+	files, err := collect(root, churn, codemetricsComplexity{}, opts)
 	if err != nil {
 		return Report{}, err
 	}
