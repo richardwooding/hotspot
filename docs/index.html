@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>hotspot — find the code worth refactoring first</title>
-<meta name="description" content="Cross-language code-risk hotspots for Go: fuse git churn × complexity × package coupling into one prioritized refactoring signal. Composes gitmeta + codemetrics + go-coupling. CLI + JSON; call-graph centrality, SARIF & MCP next.">
+<meta name="description" content="Cross-language code-risk hotspots: fuse git churn × complexity × package coupling into one prioritized refactoring signal, across 17 languages. Composes gitmeta + codemetrics + go-coupling + treesitter-symbols. CLI + JSON; call-graph centrality, SARIF & MCP next.">
 <meta property="og:title" content="hotspot">
-<meta property="og:description" content="Rank a repo by refactoring risk across 17 languages — churn × complexity × coupling — composing gitmeta, codemetrics and go-coupling.">
+<meta property="og:description" content="Rank a repo by refactoring risk across 17 languages — churn × complexity × coupling — composing gitmeta, codemetrics, go-coupling and treesitter-symbols.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%23161b22'/><circle cx='12' cy='12' r='7' fill='none' stroke='%23a371f7' stroke-width='2'/><circle cx='12' cy='12' r='2.5' fill='%23d2b3ff'/></svg>">
 <script>try{var t=localStorage.getItem("gl-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
@@ -51,7 +51,7 @@
           <a class="gl-btn primary" href="#install">Install</a>
           <a class="gl-btn ghost" href="https://pkg.go.dev/github.com/richardwooding/hotspot">Go Reference</a>
         </div>
-        <p class="gl-hint">MIT · pure Go, no cgo · composes <a href="https://richardwooding.github.io/gitmeta/">gitmeta</a> + <a href="https://richardwooding.github.io/codemetrics/">codemetrics</a> + <a href="https://richardwooding.github.io/go-coupling/">go-coupling</a></p>
+        <p class="gl-hint">MIT · pure Go, no cgo · composes <a href="https://richardwooding.github.io/gitmeta/">gitmeta</a> + <a href="https://richardwooding.github.io/codemetrics/">codemetrics</a> + <a href="https://richardwooding.github.io/go-coupling/">go-coupling</a> + <a href="https://github.com/richardwooding/treesitter-symbols">treesitter-symbols</a></p>
       </div>
       <div class="gl-term">
         <div class="bar">
@@ -90,8 +90,8 @@
         </article>
         <article class="gl-card gl-card-link">
           <h3><span class="gl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M5 8v2a2 2 0 002 2h10a2 2 0 002-2V8M12 12v4"/></svg></span>Coupling — how entangled it is</h3>
-          <p><code>go-coupling</code> builds the first-party import graph and returns each package's afferent/efferent coupling (Ca/Ce). Entangled code amplifies the risk score — it's costlier to change safely.</p>
-          <p class="gl-hint" style="margin-top:14px"><a class="gl-stretch" href="https://richardwooding.github.io/go-coupling/">go-coupling ↗</a> · <a href="https://github.com/richardwooding/go-coupling">Code ↗</a></p>
+          <p><code>treesitter-symbols</code> extracts each file's imports (pure Go, 17 languages); <code>go-coupling</code> turns them into a first-party import graph and returns each node's afferent/efferent coupling (Ca/Ce) — for Go, Rust, Python, JS/TS, Ruby, C/C++, Swift, and the declaration-based Java, Kotlin, Scala, C#, PHP, Perl. Entangled code amplifies the risk score — it's costlier to change safely.</p>
+          <p class="gl-hint" style="margin-top:14px"><a class="gl-stretch" href="https://richardwooding.github.io/go-coupling/">go-coupling ↗</a> · <a href="https://github.com/richardwooding/treesitter-symbols">treesitter-symbols ↗</a> · <a href="https://github.com/richardwooding/go-coupling">Code ↗</a></p>
         </article>
       </div>
       <div class="gl-split" style="margin-top:24px">
@@ -161,7 +161,7 @@ rep, _ := hotspot.Analyze(ctx, <span class="s">"."</span>, hotspot.Options{})
           <button class="gl-copy" data-gl-copy="i3">Copy</button>
         </div>
       </div>
-      <p class="gl-hint">Requires Go 1.26+ and a <code>git</code> binary on PATH for churn. Complexity spans <strong>17 languages</strong> (still a single pure-Go binary — no cgo). Coupling is Go modules today.</p>
+      <p class="gl-hint">Requires Go 1.26+ and a <code>git</code> binary on PATH for churn. Complexity spans <strong>17 languages</strong> and coupling spans <strong>13 ecosystems</strong> (still a single pure-Go binary — no cgo).</p>
     </div>
   </section>
 
@@ -174,7 +174,6 @@ rep, _ := hotspot.Analyze(ctx, <span class="s">"."</span>, hotspot.Options{})
         <li class="gl-lang">call-graph centrality → treesitter-symbols</li>
         <li class="gl-lang">SARIF output → go-sarif</li>
         <li class="gl-lang">MCP server (ask Claude for hotspots)</li>
-        <li class="gl-lang">multi-language coupling</li>
       </ul>
     </div>
   </section>

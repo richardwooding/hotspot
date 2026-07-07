@@ -16,10 +16,12 @@ github.com/richardwooding/codemetrics v0.11.0 h1:FsJNAnNcLo9BQ1bF1Hkg4Z0bDigyr0h
 github.com/richardwooding/codemetrics v0.11.0/go.mod h1:hDgNhkfUfWMtUt/TJfRr+AOvVS266KAwCeaDKvtkMw0=
 github.com/richardwooding/gitmeta v0.1.0 h1:TOf6P+dzcFh5fFbDwJrJFVUGPzbwqyg76wRosuYrlBA=
 github.com/richardwooding/gitmeta v0.1.0/go.mod h1:arft+ynVGxEeeRnQMnosIvlfsaxEAaHoBYh1U7Nq1n0=
-github.com/richardwooding/go-coupling v0.2.0 h1:fihwSYWgqXW/HInhNTQgZuQQHQf9vyRoZlS4MNiEJ1U=
-github.com/richardwooding/go-coupling v0.2.0/go.mod h1:Ygz2/NnbEEFLe50QPpe8TsmNQy7Az+FwzyMi8sOwzPo=
+github.com/richardwooding/go-coupling v0.3.0 h1:UNprYcitu3tW9H6+9o1Ia5CJvgbPFU1ylaV0b20CtJc=
+github.com/richardwooding/go-coupling v0.3.0/go.mod h1:Ygz2/NnbEEFLe50QPpe8TsmNQy7Az+FwzyMi8sOwzPo=
 github.com/richardwooding/projectdetect v0.6.0 h1:1MXRdvc8RCdoKAJVvDKQJtSoxgJ06ehHPmwASaTYP7w=
 github.com/richardwooding/projectdetect v0.6.0/go.mod h1:+49ozT8n9+Hsu93/nb7wKclou9qLpEtqLeqefrR4bEg=
+github.com/richardwooding/treesitter-symbols v0.5.0 h1:YWGyWDuT0eNqyChbzXwO6eNm7FgE2ZCEy1Q4WFytG6I=
+github.com/richardwooding/treesitter-symbols v0.5.0/go.mod h1:bd/HwHbyR8JPu47o/SCNNlMufIese7DUbT91zYranmA=
 go.yaml.in/yaml/v3 v3.0.4 h1:tfq32ie2Jv2UxXFdLJdh3jXuOzWiL1fo0bu/FbuKpbc=
 go.yaml.in/yaml/v3 v3.0.4/go.mod h1:DhzuOOF2ATzADvBadXxruRBLzYTpT36CKvDb3+aBEFg=
 golang.org/x/exp v0.0.0-20240823005443-9b4947da3948 h1:kx6Ds3MlpiUHKj7syVnbp57++8WpuKPcR5yjLBjvLEA=

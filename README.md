@@ -18,7 +18,7 @@ reimplementing them:
 | --- | --- | --- |
 | **churn** — commits per file, last author/time | how often it changes | [`gitmeta`](https://github.com/richardwooding/gitmeta) |
 | **complexity** — cyclomatic + cognitive, **17 languages** | how hard it is | [`codemetrics`](https://github.com/richardwooding/codemetrics) |
-| **coupling** — afferent/efferent (Ca/Ce) | how entangled it is | [`go-coupling`](https://github.com/richardwooding/go-coupling) |
+| **coupling** — afferent/efferent (Ca/Ce), **multi-language** | how entangled it is | [`go-coupling`](https://github.com/richardwooding/go-coupling) + [`treesitter-symbols`](https://github.com/richardwooding/treesitter-symbols) |
 
 ## Install
 
@@ -84,20 +84,29 @@ ranking.
 
 ## Status & roadmap
 
-**Today** hotspot fuses **churn × complexity × coupling**. Complexity is
-computed across **17 languages** — `c, cpp, csharp, go, java, javascript,
-kotlin, matlab, perl, php, python, r, ruby, rust, scala, swift, typescript` —
-with **Go** parsed via `go/ast` and the rest via `codemetrics`' **pure-Go
-tree-sitter** backend ([gotreesitter](https://github.com/odvcencio/gotreesitter),
-no cgo). Churn is language-agnostic; **coupling is currently Go modules only**
-(via `go-coupling`). Each signal sits behind a small interface (`ChurnProvider`,
+**Today** hotspot fuses **churn × complexity × coupling**, all multi-language:
+
+- **Complexity** across **17 languages** — `c, cpp, csharp, go, java,
+  javascript, kotlin, matlab, perl, php, python, r, ruby, rust, scala, swift,
+  typescript` — with **Go** parsed via `go/ast` and the rest via `codemetrics`'
+  **pure-Go tree-sitter** backend
+  ([gotreesitter](https://github.com/odvcencio/gotreesitter), no cgo).
+- **Coupling** across every ecosystem `go-coupling` understands — Go, Rust,
+  Python, JS/TS, Ruby, C/C++, Swift, plus the declaration-based Java, Kotlin,
+  Scala, C#, PHP and Perl. Imports are extracted per file by
+  [`treesitter-symbols`](https://github.com/richardwooding/treesitter-symbols)
+  (same pure-Go tree-sitter), fed to `go-coupling`, and its per-node Ca/Ce are
+  joined back to each file via `go-coupling`'s `FileCoupling()`.
+- **Churn** is language-agnostic.
+
+Each signal sits behind a small interface (`ChurnProvider`,
 `ComplexityProvider`, `CouplingProvider`), so the following drop in without
 changing the scorer:
 
-- **call-graph centrality** (blast radius) — [`treesitter-symbols`](https://github.com/richardwooding/treesitter-symbols)
+- **call-graph centrality** (blast radius) — `treesitter-symbols` already
+  supplies the call edges
 - **SARIF** output for GitHub code scanning — [`go-sarif`](https://github.com/richardwooding/go-sarif)
 - an **MCP server** so an AI agent can ask *"what's the riskiest code here, and why?"*
-- multi-language coupling
 
 ## License
 
