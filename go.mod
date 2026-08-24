@@ -1,6 +1,6 @@
 module github.com/richardwooding/hotspot
 
-go 1.26.2
+go 1.27.0
 
 require (
 	github.com/richardwooding/codemetrics v0.12.0
