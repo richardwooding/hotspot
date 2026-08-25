@@ -9,11 +9,11 @@ import (
 // and the combined risk Score. Files with no measurable complexity (e.g. an
 // unsupported language) still carry churn and appear with a low score.
 type FileRisk struct {
-	Path       string    `json:"path"`       // repo-relative, slash-separated
-	Language   string    `json:"language"`   // "go", or "" when not analyzed for complexity
-	Commits    int       `json:"commits"`    // churn: commits touching the file
+	Path       string    `json:"path"`     // repo-relative, slash-separated
+	Language   string    `json:"language"` // "go", or "" when not analyzed for complexity
+	Commits    int       `json:"commits"`  // churn: commits touching the file
 	LastAuthor string    `json:"lastAuthor,omitempty"`
-	LastChange time.Time `json:"lastChange,omitempty"`
+	LastChange time.Time `json:"lastChange"`
 	Functions  int       `json:"functions"`  // functions parsed
 	Cyclomatic int       `json:"cyclomatic"` // summed over functions
 	Cognitive  int       `json:"cognitive"`  // summed over functions
